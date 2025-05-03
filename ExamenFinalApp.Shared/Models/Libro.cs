@@ -19,5 +19,8 @@ namespace ExamenFinalApp.Shared.Models
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de Publicación")]
         public DateTime FechaPublicacion { get; set; }
+
+        public bool Disponible { get; set; }
+
     }
 }

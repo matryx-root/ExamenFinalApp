@@ -5,12 +5,11 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <div class="container mt-4">
-    <h2 class="text-center mb-4">📚 Gestión de Libros</h2>
-
+    <h2 class="text-center mb-4">📚 William Wallace v2</h2>
 
     @if (!string.IsNullOrWhiteSpace(mensaje))
     {
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <div class="alert @mensajeTipo alert-dismissible fade show" role="alert">
             @mensaje
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
         </div>
@@ -45,8 +44,12 @@
                         <div class="col-md-4">
                             <InputDate class="form-control" @bind-Value="modelo.FechaPublicacion" />
                         </div>
+                        <div class="col-md-4 mt-2">
+                            <InputCheckbox @bind-Value="modelo.Disponible" />
+                            <label class="ms-1">Disponible</label>
+                        </div>
                         <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-success">@((editando ? "💾 Actualizar" : "📥 Guardar"))</button>
+                            <button type="submit" class="btn btn-success btn-lg">@((editando ? "💾 Actualizar" : "📥 Guardar"))</button>
                             @if (editando)
                             {
                                 <button type="button" class="btn btn-secondary ms-2" @onclick="Cancelar">❌ Cancelar</button>
@@ -65,6 +68,7 @@
                     <th>Autor</th>
                     <th>Páginas</th>
                     <th>Fecha Publicación</th>
+                    <th>Disponibilidad</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -76,9 +80,10 @@
                         <td>@libro.Autor</td>
                         <td>@libro.Paginas</td>
                         <td>@libro.FechaPublicacion.ToShortDateString()</td>
+                        <td>@(libro.Disponible ? "✅" : "❌")</td>
                         <td>
-                            <button class="btn btn-warning btn-sm me-1" @onclick="() => Editar(libro)">✏️</button>
-                            <button class="btn btn-danger btn-sm" @onclick="() => Eliminar(libro.Id)">🗑️</button>
+                            <button class="btn btn-warning btn-md me-1" @onclick="() => Editar(libro)">✏️</button>
+                            <button class="btn btn-outline-danger btn-md" @onclick="() => Eliminar(libro.Id)">🗑️</button>
                         </td>
                     </tr>
                 }
@@ -108,6 +113,7 @@
     Libro modelo = new();
     bool editando = false;
     string mensaje = string.Empty;
+    string mensajeTipo = "alert-success";
     bool cargando = true;
 
     protected override async Task OnInitializedAsync()
@@ -124,7 +130,10 @@
 
     async Task Guardar()
     {
+        cargando = true;
         HttpResponseMessage response;
+
+        await Task.Delay(1000);
 
         if (editando)
         {
@@ -132,6 +141,7 @@
             if (response.IsSuccessStatusCode)
             {
                 mensaje = "✅ Libro actualizado correctamente.";
+                mensajeTipo = "alert-warning";
                 modelo = new();
                 editando = false;
                 await ObtenerLibros();
@@ -139,6 +149,7 @@
             else
             {
                 mensaje = "❌ Error al actualizar.";
+                mensajeTipo = "alert-danger";
             }
         }
         else
@@ -147,6 +158,7 @@
             if (response.IsSuccessStatusCode)
             {
                 mensaje = "✅ Libro agregado correctamente.";
+                mensajeTipo = "alert-success";
                 modelo = new();
                 editando = false;
                 await ObtenerLibros();
@@ -154,8 +166,11 @@
             else
             {
                 mensaje = "❌ Error al guardar.";
+                mensajeTipo = "alert-danger";
             }
         }
+
+        cargando = false;
     }
 
     void Editar(Libro libro)
@@ -166,7 +181,8 @@
                 Titulo = libro.Titulo,
                 Autor = libro.Autor,
                 Paginas = libro.Paginas,
-                FechaPublicacion = libro.FechaPublicacion
+                FechaPublicacion = libro.FechaPublicacion,
+                Disponible = libro.Disponible
             };
         editando = true;
         mensaje = string.Empty;
@@ -174,9 +190,15 @@
 
     async Task Eliminar(int id)
     {
+        cargando = true;
+        await Task.Delay(800);
+
         var response = await Http.DeleteAsync($"{url}/api/Libro/{id}");
-        mensaje = response.IsSuccessStatusCode ? "🗑️ Libro eliminado." : "❌ No se pudo eliminar.";
+        mensaje = response.IsSuccessStatusCode ? "🗑️ Libro eliminado correctamente." : "❌ No se pudo eliminar.";
+        mensajeTipo = response.IsSuccessStatusCode ? "alert-danger" : "alert-warning";
+
         await ObtenerLibros();
+        cargando = false;
     }
 
     void Cancelar()

@@ -1,7 +1,11 @@
 ﻿using ExamenFinalApp.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
+
+
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+builder.Services.AddBlazorBootstrap();
 
 builder.RootComponents.Add<App>("#app"); // 🧩 Apunta a App.razor que renderiza tus páginas
 
