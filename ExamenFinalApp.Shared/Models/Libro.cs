@@ -18,7 +18,7 @@ namespace ExamenFinalApp.Shared.Models
 
         [DataType(DataType.Date)]
         [Display(Name = "Fecha de Publicación")]
-        public DateTime FechaPublicacion { get; set; }
+        public DateTime FechaPublicacion { get; set; } = DateTime.Now;
 
         public bool Disponible { get; set; }
 

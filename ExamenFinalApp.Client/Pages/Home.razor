@@ -41,9 +41,10 @@
                         <div class="col-md-4">
                             <InputNumber class="form-control" @bind-Value="modelo.Paginas" placeholder="N° de páginas" />
                         </div>
-                        <div class="col-md-4">
-                            <InputDate class="form-control" @bind-Value="modelo.FechaPublicacion" />
-                        </div>
+                        <InputDate @bind-Value="modelo.FechaPublicacion" class="form-control"
+                                   ParseValueOnChange="true"
+                                   format="dd/MM/yyyy" />
+
                         <div class="col-md-4 mt-2">
                             <InputCheckbox @bind-Value="modelo.Disponible" />
                             <label class="ms-1">Disponible</label>
@@ -57,8 +58,28 @@
                         </div>
                     </div>
                 </EditForm>
+
+                @if (cargandoFormulario)
+                {
+                    <div class="text-center my-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Procesando...</span>
+                        </div>
+                        <p class="mt-2">Procesando formulario...</p>
+                    </div>
+                }
             </div>
         </div>
+
+        @if (cargandoEliminacion)
+        {
+            <div class="text-center my-3">
+                <div class="spinner-border text-danger" role="status">
+                    <span class="visually-hidden">Eliminando...</span>
+                </div>
+                <p class="mt-2 text-danger">Eliminando libro...</p>
+            </div>
+        }
 
         <h4 class="mb-3">📖 Libros en la Biblioteca</h4>
         <table class="table table-hover table-bordered table-striped">
@@ -115,6 +136,8 @@
     string mensaje = string.Empty;
     string mensajeTipo = "alert-success";
     bool cargando = true;
+    bool cargandoFormulario = false;
+    bool cargandoEliminacion = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -130,47 +153,45 @@
 
     async Task Guardar()
     {
-        cargando = true;
+        cargandoFormulario = true;
         HttpResponseMessage response;
 
-        await Task.Delay(1000);
+        await Task.Delay(3000); 
 
         if (editando)
         {
             response = await Http.PutAsJsonAsync($"{url}/api/Libro/{modelo.Id}", modelo);
-            if (response.IsSuccessStatusCode)
-            {
-                mensaje = "✅ Libro actualizado correctamente.";
-                mensajeTipo = "alert-warning";
-                modelo = new();
-                editando = false;
-                await ObtenerLibros();
-            }
-            else
-            {
-                mensaje = "❌ Error al actualizar.";
-                mensajeTipo = "alert-danger";
-            }
+            mensaje = response.IsSuccessStatusCode ? "✅ Libro actualizado correctamente." : "❌ Error al actualizar.";
+            mensajeTipo = response.IsSuccessStatusCode ? "alert-warning" : "alert-danger";
         }
         else
         {
             response = await Http.PostAsJsonAsync($"{url}/api/Libro", modelo);
-            if (response.IsSuccessStatusCode)
-            {
-                mensaje = "✅ Libro agregado correctamente.";
-                mensajeTipo = "alert-success";
-                modelo = new();
-                editando = false;
-                await ObtenerLibros();
-            }
-            else
-            {
-                mensaje = "❌ Error al guardar.";
-                mensajeTipo = "alert-danger";
-            }
+            mensaje = response.IsSuccessStatusCode ? "✅ Libro agregado correctamente." : "❌ Error al guardar.";
+            mensajeTipo = response.IsSuccessStatusCode ? "alert-success" : "alert-danger";
         }
 
-        cargando = false;
+        if (response.IsSuccessStatusCode)
+        {
+            modelo = new();
+            editando = false;
+            await ObtenerLibros();
+        }
+
+        cargandoFormulario = false;
+    }
+
+    async Task Eliminar(int id)
+    {
+        cargandoEliminacion = true;
+        await Task.Delay(2000); 
+
+        var response = await Http.DeleteAsync($"{url}/api/Libro/{id}");
+        mensaje = response.IsSuccessStatusCode ? "🗑️ Libro eliminado correctamente." : "❌ No se pudo eliminar.";
+        mensajeTipo = response.IsSuccessStatusCode ? "alert-danger" : "alert-warning";
+
+        await ObtenerLibros();
+        cargandoEliminacion = false;
     }
 
     void Editar(Libro libro)
@@ -186,19 +207,6 @@
             };
         editando = true;
         mensaje = string.Empty;
-    }
-
-    async Task Eliminar(int id)
-    {
-        cargando = true;
-        await Task.Delay(800);
-
-        var response = await Http.DeleteAsync($"{url}/api/Libro/{id}");
-        mensaje = response.IsSuccessStatusCode ? "🗑️ Libro eliminado correctamente." : "❌ No se pudo eliminar.";
-        mensajeTipo = response.IsSuccessStatusCode ? "alert-danger" : "alert-warning";
-
-        await ObtenerLibros();
-        cargando = false;
     }
 
     void Cancelar()
