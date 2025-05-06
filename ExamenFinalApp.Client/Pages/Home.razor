@@ -4,120 +4,127 @@
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<div class="container mt-4">
+<div class="container mt-4 text-center">
     <h2 class="text-center mb-4">📚 William Wallace v2</h2>
 
-    @if (!string.IsNullOrWhiteSpace(mensaje))
-    {
-        <div class="alert @mensajeTipo alert-dismissible fade show" role="alert">
-            @mensaje
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-        </div>
-    }
-
-    @if (cargando)
-    {
-        <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="card mb-4">
-            <div class="card-header">@((editando ? "✏️ Editar Libro" : "➕ Agregar Libro"))</div>
-            <div class="card-body">
-                <EditForm Model="@modelo" OnValidSubmit="Guardar" FormName="libro-form">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <InputText class="form-control" @bind-Value="modelo.Titulo" placeholder="Título del Libro" />
-                        </div>
-                        <div class="col-md-6">
-                            <InputText class="form-control" @bind-Value="modelo.Autor" placeholder="Autor" />
-                        </div>
-                        <div class="col-md-4">
-                            <InputNumber class="form-control" @bind-Value="modelo.Paginas" placeholder="N° de páginas" />
-                        </div>
-                        <InputDate @bind-Value="modelo.FechaPublicacion" class="form-control"
-                                   ParseValueOnChange="true"
-                                   format="dd/MM/yyyy" />
-
-                        <div class="col-md-4 mt-2">
-                            <InputCheckbox @bind-Value="modelo.Disponible" />
-                            <label class="ms-1">Disponible</label>
-                        </div>
-                        <div class="col-12 text-end">
-                            <button type="submit" class="btn btn-success btn-lg">@((editando ? "💾 Actualizar" : "📥 Guardar"))</button>
-                            @if (editando)
-                            {
-                                <button type="button" class="btn btn-secondary ms-2" @onclick="Cancelar">❌ Cancelar</button>
-                            }
-                        </div>
-                    </div>
-                </EditForm>
-
-                @if (cargandoFormulario)
-                {
-                    <div class="text-center my-3">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Procesando...</span>
-                        </div>
-                        <p class="mt-2">Procesando formulario...</p>
-                    </div>
-                }
-            </div>
-        </div>
-
-        @if (cargandoEliminacion)
+    <div class="mx-auto" style="max-width: 800px;">
+        @if (!string.IsNullOrWhiteSpace(mensaje))
         {
-            <div class="text-center my-3">
-                <div class="spinner-border text-danger" role="status">
-                    <span class="visually-hidden">Eliminando...</span>
-                </div>
-                <p class="mt-2 text-danger">Eliminando libro...</p>
+            <div class="alert @mensajeTipo alert-dismissible fade show" role="alert">
+                @mensaje
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             </div>
         }
 
-        <h4 class="mb-3">📖 Libros en la Biblioteca</h4>
-        <table class="table table-hover table-bordered table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Páginas</th>
-                    <th>Fecha Publicación</th>
-                    <th>Disponibilidad</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var libro in libros)
-                {
+        @if (cargando)
+        {
+            <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card mb-4">
+                <div class="card-header">@((editando ? "✏️ Editar Libro" : "➕ Agregar Libro"))</div>
+                <div class="card-body">
+                    <EditForm Model="@modelo" OnValidSubmit="Guardar" FormName="libro-form">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <InputText class="form-control" @bind-Value="modelo.Titulo" placeholder="Título del Libro" />
+                            </div>
+                            <div class="col-md-6">
+                                <InputText class="form-control" @bind-Value="modelo.Autor" placeholder="Autor" />
+                            </div>
+                            <div class="col-md-4">
+                                <InputNumber class="form-control" @bind-Value="modelo.Paginas" placeholder="N° de páginas" />
+                            </div>
+                            <InputDate @bind-Value="modelo.FechaPublicacion" class="form-control"
+                                       ParseValueOnChange="true"
+                                       format="dd/MM/yyyy" />
+
+                            <div class="col-md-4 mt-2">
+                                <InputCheckbox @bind-Value="modelo.Disponible" />
+                                <label class="ms-1">Disponible</label>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-success btn-lg">@((editando ? "💾 Actualizar" : "📥 Guardar"))</button>
+                                @if (editando)
+                                {
+                                    <button type="button" class="btn btn-secondary ms-2" @onclick="Cancelar">❌ Cancelar</button>
+                                }
+                            </div>
+                        </div>
+                    </EditForm>
+
+                    @if (cargandoFormulario)
+                    {
+                        <div class="text-center my-3">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Procesando...</span>
+                            </div>
+                            <p class="mt-2">Procesando formulario...</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @if (cargandoEliminacion)
+            {
+                <div class="text-center my-3">
+                    <div class="spinner-border text-danger" role="status">
+                        <span class="visually-hidden">Eliminando...</span>
+                    </div>
+                    <p class="mt-2 text-danger">Eliminando libro...</p>
+                </div>
+            }
+
+            <h4 class="mb-3">📖 Libros en la Biblioteca</h4>
+            <table class="table table-hover table-bordered table-striped w-100">
+                <thead class="table-dark">
                     <tr>
-                        <td>@libro.Titulo</td>
-                        <td>@libro.Autor</td>
-                        <td>@libro.Paginas</td>
-                        <td>@libro.FechaPublicacion.ToShortDateString()</td>
-                        <td>@(libro.Disponible ? "✅" : "❌")</td>
-                        <td>
-                            <button class="btn btn-warning btn-md me-1" @onclick="() => Editar(libro)">✏️</button>
-                            <button class="btn btn-outline-danger btn-md" @onclick="() => Eliminar(libro.Id)">🗑️</button>
-                        </td>
+                        <th>Título</th>
+                        <th>Autor</th>
+                        <th>Páginas</th>
+                        <th>Fecha Publicación</th>
+                        <th>Disponibilidad</th>
+                        <th>Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
-    }
+                </thead>
+                <tbody>
+                    @foreach (var libro in libros)
+                    {
+                        <tr>
+                            <td>@libro.Titulo</td>
+                            <td>@libro.Autor</td>
+                            <td>@libro.Paginas</td>
+                            <td>@libro.FechaPublicacion.ToShortDateString()</td>
+                            <td>@(libro.Disponible ? "✅" : "❌")</td>
+                            <td>
+                                <button class="btn btn-warning btn-md me-1" @onclick="() => Editar(libro)">✏️</button>
+                                <button class="btn btn-outline-danger btn-md" @onclick="() => Eliminar(libro.Id)">🗑️</button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
 
     <a href="#" class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4" title="Subir">
         ⬆️
     </a>
 </div>
 
+
 <style>
+    body {
+        background: linear-gradient(to right, #c6ffdd, #fbd786, #f7797d);
+    }
+
     a[href="#"] {
         width: 48px;
         height: 48px;
@@ -156,7 +163,7 @@
         cargandoFormulario = true;
         HttpResponseMessage response;
 
-        await Task.Delay(3000); 
+        await Task.Delay(3000);
 
         if (editando)
         {
@@ -184,7 +191,7 @@
     async Task Eliminar(int id)
     {
         cargandoEliminacion = true;
-        await Task.Delay(2000); 
+        await Task.Delay(2000);
 
         var response = await Http.DeleteAsync($"{url}/api/Libro/{id}");
         mensaje = response.IsSuccessStatusCode ? "🗑️ Libro eliminado correctamente." : "❌ No se pudo eliminar.";

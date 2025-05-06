@@ -12,6 +12,11 @@
     <PackageReference Include="Blazor.Bootstrap" Version="3.3.1" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
   </ItemGroup>
+	<ItemGroup>
+  <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.js" />
+  <ServiceWorkerAssetsManifest Include="wwwroot\service-worker-assets.js" />
+</ItemGroup>
+
 
   <ItemGroup>
     <ProjectReference Include="..\ExamenFinalApp.Shared\ExamenFinalApp.Shared.csproj" />
