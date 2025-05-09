@@ -1,108 +1,147 @@
 
-# 🎓 ExamenFinalApp
+# 📌 Instalación
 
-Aplicación desarrollada con **Blazor WebAssembly**, **.NET 9**, **Entity Framework Core** y **SQL Server** para el examen final del curso de **Programación Multiplataforma**.
+## Requisitos Previos:
 
-Permite realizar operaciones CRUD sobre una tabla de libros, con validaciones, diseño responsivo y soporte PWA.
+- [.NET 9 SDK](https://dotnet.microsoft.com/)
+- SQL Server Express (o LocalDB)
+- Node.js *(opcional para herramientas frontend)*
 
----
-
-## 🚀 Características
-
-- Agregar, editar, listar y eliminar libros 📚
-- Validación de formularios con DataAnnotations
-- Formato de fecha personalizado (`dd/MM/yyyy`)
-- Alertas visuales según acción (agregar, editar, eliminar)
-- Carga animada (spinner) y diseño responsivo con Bootstrap
-- Implementación de PWA (instalable como app)
-- Bootstrap 5.3 integrado vía CDN
-- Arquitectura en capas (Client, Server, Shared)
-- Migraciones automáticas con EF Core
-
----
-
-## 🛠️ Tecnologías utilizadas
-
-- Blazor WebAssembly (.NET 9)
-- ASP.NET Core + API REST
-- Entity Framework Core
-- SQL Server Express
-- Bootstrap 5.3 (CDN)
-- Visual Studio 2022
-- Git + GitHub
-
----
-
-## 📦 Estructura del Proyecto
-
-```plaintext
-ExamenFinalApp.sln
-│
-├── ExamenFinalApp/             → Proyecto del servidor (API + EF Core)
-│   ├── Data/
-│   ├── Controllers/
-│   └── Migrations/
-│
-├── ExamenFinalApp.Client/      → Proyecto Blazor WebAssembly (PWA)
-│   └── Pages/Home.razor
-│
-├── ExamenFinalApp.Shared/      → Proyecto compartido (modelo Libro.cs)
-│   └── Models/Libro.cs
-```
-
----
-
-## 🧪 Requisitos
-
-- .NET 9 SDK  
-- SQL Server Express o LocalDB  
-- Visual Studio 2022 con soporte para .NET, Blazor y EF Core
-
----
-
-## 💾 Instalación local
-
-### 1. Clonar el repositorio
+## Pasos de Configuración:
 
 ```bash
-git clone https://github.com/matryx-root/ExamenFinalApp.git
-cd ExamenFinalApp
+# Clonar el repositorio
+git clone https://github.com/tu-repositorio/ExamenFinalApp.git
+
+# Restaurar dependencias
+dotnet restore
+
+# Ejecutar migraciones de EF Core
+dotnet ef database update
+
+# Iniciar la aplicación
+dotnet run
 ```
 
-### 2. Configurar la cadena de conexión
+---
 
-En el archivo `appsettings.json` del proyecto **ExamenFinalApp**:
+# 📌 Configuración PWA
 
-```json
-"ConnectionStrings": {
-  "DefaultConnection": "Server=localhost\SQLEXPRESS;Database=BiblioNet;Trusted_Connection=True;TrustServerCertificate=True;"
+### Archivos clave:
+
+* `manifest.json`: metadatos de la aplicación.
+* `service-worker.js`: manejo de caché y recursos offline.
+* `wwwroot/`: contiene recursos estáticos (CSS, JS, imágenes).
+
+---
+
+# 📌 Uso Básico
+
+## Agregar un libro:
+
+1. Completa el formulario.
+2. Haz clic en **Guardar**.
+3. Se muestra una alerta verde de confirmación.
+
+## Editar / Eliminar:
+
+* Usa los botones:
+
+  * ✏️ (amarillo) para editar.
+  * 🗑️ (rojo) para eliminar.
+
+---
+
+# 🧾 Comentarios XML en Código Clave
+
+## 🔹 En `LibroController.cs`
+
+```csharp
+/// <summary>
+/// Controlador API para operaciones CRUD de libros.
+/// </summary>
+/// <remarks>
+/// Endpoints:
+/// - GET /api/Libro → Lista todos los libros.
+/// - POST /api/Libro → Agrega un nuevo libro.
+/// </remarks>
+[ApiController]
+[Route("api/[controller]")]
+public class LibroController : ControllerBase { ... }
+```
+
+## 🔹 En `Home.razor` (Blazor)
+
+```csharp
+@code {
+    /// <summary>
+    /// Obtiene la lista de libros desde la API.
+    /// </summary>
+    /// <returns>Task con la operación asíncrona.</returns>
+    async Task ObtenerLibros() {
+        libros = await Http.GetFromJsonAsync<List<Libro>>($"{url}/api/Libro");
+    }
 }
 ```
 
-### 3. Ejecutar migraciones
+---
 
-```bash
-dotnet ef database update --project ExamenFinalApp
-```
+# 🎥 Video Tutorial de Instalación/Uso
 
-### 4. Ejecutar el cliente (Blazor WebAssembly)
+**Incluye:**
 
-```bash
-dotnet run --project ExamenFinalApp.Client
-```
+✅ Instalación:
 
-### 5. Acceder desde el navegador
+* Configuración de la base de datos.
+* Ejecución de migraciones.
 
-```
-https://localhost:5001
+✅ Funcionalidades CRUD:
+
+* Demo de agregar, editar y eliminar libros.
+* Visualización de alertas (verde, amarillo, rojo).
+
+✅ Instalación como PWA:
+
+* Añadir app al escritorio desde Chrome/Edge.
+
+---
+
+# 🛠️ Soporte Técnico
+
+## 1. Formulario de Contacto Ficticio
+
+```razor
+<EditForm Model="@problema" OnValidSubmit="@EnviarReporte">
+    <InputText @bind-Value="problema.Descripcion" placeholder="Describe el error..." />
+    <button type="submit" class="btn btn-primary">Enviar</button>
+</EditForm>
+
+@code {
+    class Problema { public string Descripcion { get; set; } = ""; }
+    Problema problema = new();
+
+    void EnviarReporte() {
+        // Simulación de envío (no implementado en producción)
+        Console.WriteLine($"Reporte enviado: {problema.Descripcion}");
+    }
+}
 ```
 
 ---
 
-## 🧠 Créditos
+## 2. FAQ en Código (Comentarios)
 
-Desarrollado por **Simón Sebastián Velásquez Cárcamo**  
-Curso: *2025-1B - Programación Multiplataforma - IPLACEX*  
-Docente: *Alondra Stephanie Vásquez Pereira*
+### 🔹 En `Program.cs`
 
----
+```csharp
+// ⚠️ FAQ: ¿Cómo solucionar errores de CORS?
+// Asegurar que el cliente y el servidor usen la misma URL.
+// Ejemplo: builder.Services.AddCors(options => options.AddPolicy("AllowAll", ...));
+```
+
+### 🔹 En `service-worker.js`
+
+```javascript
+// ⚠️ FAQ: ¿La PWA no se actualiza?
+// Borrar caché manualmente en DevTools → Application → Clear storage.
+```
