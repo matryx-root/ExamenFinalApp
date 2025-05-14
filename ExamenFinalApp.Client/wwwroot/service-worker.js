@@ -1,4 +1,4 @@
-﻿self.importScripts('./service-worker-assets.js');
+self.importScripts('./service-worker-assets.js');
 
 const CACHE_NAME = 'offline-cache-v1';
 const ASSETS = self.assetsManifest.assets.map(asset => new URL(asset.url, self.location).toString());
