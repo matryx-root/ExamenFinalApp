@@ -1,147 +1,85 @@
 
-# 📌 Instalación
+# 📚 Biblioteca Escolar - Examen Final  
 
-## Requisitos Previos:
+Aplicación PWA para gestión de libros en la escuela "William Wallace", desarrollada con:  
+- **Frontend**: Blazor WebAssembly (.NET 9)  
+- **Backend**: API REST con .NET 9  
+- **Base de Datos**: SQL Server Express  
 
-- [.NET 9 SDK](https://dotnet.microsoft.com/)
-- SQL Server Express (o LocalDB)
-- Node.js *(opcional para herramientas frontend)*
+## 🚀 Instalación  
+1. **Clonar repositorio**:  
+   ```bash
+   git clone https://github.com/matryx-root/ExamenFinalApp.git
+   ```
+2. **Configurar BD**:  
+   - Ejecutar migraciones:  
+     ```bash
+     dotnet ef database update --project ExamenFinalApp.Server
+     ```
+3. **Iniciar aplicación**:  
+   ```bash
+   dotnet run --project ExamenFinalApp.Server
+   ```
+4. **Acceder**:  
+   Abrir `https://localhost:5001` en el navegador.  
 
-## Pasos de Configuración:
+## 📖 Manual de Uso  
+### Operaciones CRUD:  
+- **Agregar libro**: Rellenar formulario y guardar (✅ Alerta verde).  
+- **Editar/Eliminar**: Usar botones en la tabla (⚠️ Alerta amarilla/🔴 roja).  
+- **Instalar PWA**: Click en "Instalar" en el navegador (Chrome/Edge).  
 
-```bash
-# Clonar el repositorio
-git clone https://github.com/tu-repositorio/ExamenFinalApp.git
-
-# Restaurar dependencias
-dotnet restore
-
-# Ejecutar migraciones de EF Core
-dotnet ef database update
-
-# Iniciar la aplicación
-dotnet run
+## 📦 Estructura del Proyecto  
+```
+ExamenFinalApp/
+├── Client/    # Blazor WASM
+├── Server/    # API .NET
+├── Shared/    # Modelos (Libro.cs)
+└── README.md  # Este archivo
 ```
 
----
+# 💾 Restauración de Base de Datos  
 
-# 📌 Configuración PWA
+## Método 1: SSMS (GUI)  
+1. Abrir **SQL Server Management Studio**.  
+2. Click derecho en `BiblioNet` > `Tasks` > `Restore` > `Database`.  
+3. Seleccionar archivo `.bak` y ejecutar.  
 
-### Archivos clave:
+## Método 2: Script SQL  
+```sql
+RESTORE DATABASE BiblioNet
+FROM DISK = 'C:\backups\BiblioNet_20250520.bak'
+WITH REPLACE, RECOVERY;
+```
 
-* `manifest.json`: metadatos de la aplicación.
-* `service-worker.js`: manejo de caché y recursos offline.
-* `wwwroot/`: contiene recursos estáticos (CSS, JS, imágenes).
+## Automatización (PowerShell)  
+```powershell
+# Ejecutar cada 24h
+Backup-SqlDatabase -ServerInstance "localhost\SQLEXPRESS" -Database "BiblioNet" -BackupFile "C:\backups\BiblioNet_$(Get-Date -Format yyyyMMdd).bak"
+```
 
----
+# 📝 Registro de Logs  
 
-# 📌 Uso Básico
-
-## Agregar un libro:
-
-1. Completa el formulario.
-2. Haz clic en **Guardar**.
-3. Se muestra una alerta verde de confirmación.
-
-## Editar / Eliminar:
-
-* Usa los botones:
-
-  * ✏️ (amarillo) para editar.
-  * 🗑️ (rojo) para eliminar.
-
----
-
-# 🧾 Comentarios XML en Código Clave
-
-## 🔹 En `LibroController.cs`
-
+## Configuración en .NET  
 ```csharp
-/// <summary>
-/// Controlador API para operaciones CRUD de libros.
-/// </summary>
-/// <remarks>
-/// Endpoints:
-/// - GET /api/Libro → Lista todos los libros.
-/// - POST /api/Libro → Agrega un nuevo libro.
-/// </remarks>
-[ApiController]
-[Route("api/[controller]")]
-public class LibroController : ControllerBase { ... }
+// En Program.cs
+builder.Logging.AddFile("logs/app-{Date}.log", minimumLevel: LogLevel.Debug);
 ```
 
-## 🔹 En `Home.razor` (Blazor)
-
-```csharp
-@code {
-    /// <summary>
-    /// Obtiene la lista de libros desde la API.
-    /// </summary>
-    /// <returns>Task con la operación asíncrona.</returns>
-    async Task ObtenerLibros() {
-        libros = await Http.GetFromJsonAsync<List<Libro>>($"{url}/api/Libro");
-    }
-}
+## Ejemplo de Consulta  
+```sql
+-- Buscar errores en SQL Server
+SELECT * FROM sys.event_log 
+WHERE message LIKE '%Error%' 
+AND timestamp > DATEADD(day, -1, GETDATE());
 ```
 
----
-
-# 🎥 Video Tutorial de Instalación/Uso
-
-**Incluye:**
-
-✅ Instalación:
-
-* Configuración de la base de datos.
-* Ejecución de migraciones.
-
-✅ Funcionalidades CRUD:
-
-* Demo de agregar, editar y eliminar libros.
-* Visualización de alertas (verde, amarillo, rojo).
-
-✅ Instalación como PWA:
-
-* Añadir app al escritorio desde Chrome/Edge.
-
----
-
-# 🛠️ Soporte Técnico
-
-## 1. Formulario de Contacto Ficticio
-
-```razor
-<EditForm Model="@problema" OnValidSubmit="@EnviarReporte">
-    <InputText @bind-Value="problema.Descripcion" placeholder="Describe el error..." />
-    <button type="submit" class="btn btn-primary">Enviar</button>
-</EditForm>
-
-@code {
-    class Problema { public string Descripcion { get; set; } = ""; }
-    Problema problema = new();
-
-    void EnviarReporte() {
-        // Simulación de envío (no implementado en producción)
-        Console.WriteLine($"Reporte enviado: {problema.Descripcion}");
-    }
-}
+## Script para Limpieza (Windows Task Scheduler)  
+```powershell
+# Eliminar logs antiguos (>30 días)
+Get-ChildItem "C:\logs\*.log" | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-30) } | Remove-Item
 ```
 
----
 
-## 2. FAQ en Código (Comentarios)
-
-### 🔹 En `Program.cs`
-
-```csharp
-// ⚠️ FAQ: ¿Cómo solucionar errores de CORS?
-// Asegurar que el cliente y el servidor usen la misma URL.
-// Ejemplo: builder.Services.AddCors(options => options.AddPolicy("AllowAll", ...));
-```
-
-### 🔹 En `service-worker.js`
-
-```javascript
-// ⚠️ FAQ: ¿La PWA no se actualiza?
-// Borrar caché manualmente en DevTools → Application → Clear storage.
-```
+## 📞 Soporte  
+¿Problemas? Consulta las [FAQs en el código](#) o abre un *issue* en GitHub.  
