@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-
+/// Modelo de dominio para libros. Incluye validaciones automáticas.
 namespace ExamenFinalApp.Shared.Models
 {
     public class Libro

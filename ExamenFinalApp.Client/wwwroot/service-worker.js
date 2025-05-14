@@ -1,3 +1,19 @@
+﻿/// <summary>
+
+/// ⚠️ FAQ: PWA no se instala
+///    ** Síntoma **:  
+/// El botón de instalación no aparece.  
+
+/// ** Solución **:
+/// - Verificar que el `service-worker.js` esté registrado.  
+/// - Asegurar HTTPS en producción. 
+
+/// </summary>
+
+
+
+
+
 // Caution! Be sure you understand the caveats before publishing an application with
 // offline support. See https://aka.ms/blazor-offline-considerations
 
@@ -19,7 +35,7 @@ const manifestUrlList = self.assetsManifest.assets.map(asset => new URL(asset.ur
 async function onInstall(event) {
     console.info('Service worker: Install');
 
-    // a�adido por mi
+    // añadido por mi
     //self.skipWaiting();
 
     // Fetch and cache all matching items from the assets manifest

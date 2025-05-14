@@ -1,6 +1,17 @@
 ﻿// ⚠️ FAQ: ¿Cómo solucionar errores de CORS?
 // Asegurar que el cliente y el servidor usen la misma URL.
-// Ejemplo: builder.Services.AddCors(options => options.AddPolicy("AllowAll", ...));
+/// Errores de CORS  
+/// **Síntoma**:  
+/// `Access - Control - Allow - Origin` bloqueado.
+/// * *Solución * *:  
+/// ```csharp
+/// En Program.cs (Backend)
+/// builder.Services.AddCors(options =>
+///    options.AddPolicy("AllowAll", policy =>
+///        policy.WithOrigins("https://localhost:5001") // ← URL del cliente
+///              .AllowAnyMethod()
+///               .AllowAnyHeader()));
+
 
 
 

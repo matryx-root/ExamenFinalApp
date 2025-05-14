@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ExamenFinalApp.Controllers;
 
+/// Controlador API para operaciones CRUD de libros.
+/// Endpoints: POST /api/libros, GET /api/libros, etc.
+
 [Route("api/[controller]")]
 [ApiController]
 public class LibroController : ControllerBase
